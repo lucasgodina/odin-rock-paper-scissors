@@ -1,3 +1,8 @@
+let humanScore = 0;
+let computerScore = 0;
+const buttons = document.querySelectorAll('button');
+const resultDisplay = document.querySelector('#result');
+
 function getComputerChoice() {
 	let randomNumber = Math.floor(Math.random() * 3);
 	switch (randomNumber) {
@@ -9,18 +14,6 @@ function getComputerChoice() {
 			return 'scissors';
 	}
 }
-
-function getHumanChoice() {
-	let choice = prompt('Enter your choice: ');
-	choice = choice.toLowerCase();
-	while (choice !== 'rock' && choice !== 'paper' && choice !== 'scissors') {
-		choice = prompt('Invalid choice. Please enter rock, paper, or scissors: ');
-	}
-	return choice;
-}
-
-let humanScore = 0;
-let computerScore = 0;
 
 function playRound(computerChoice, humanChoice) {
 	if (computerChoice === humanChoice) {
@@ -40,16 +33,36 @@ function playRound(computerChoice, humanChoice) {
 	}
 }
 
-function playGame() {
-	for (let i = 0; i < 5; i++) {
-		const humanChoice = getHumanChoice();
-		const computerChoice = getComputerChoice();
-		console.log('Computer choice: ' + computerChoice);
-		console.log('Human choice: ' + humanChoice);
-		console.log(playRound(computerChoice, humanChoice));
-	}
+function removeEventListeners(buttons) {
+	buttons.forEach((button) => {
+		button.removeEventListener('click', handleClick);
+	});
+}
+
+function handleClick(event) {
+	const humanChoice = event.target.id;
+	const computerChoice = getComputerChoice();
+	console.log('Computer choice: ' + computerChoice);
+	console.log('Human choice: ' + humanChoice);
+	console.log(playRound(computerChoice, humanChoice));
+
 	console.log('Human score: ' + humanScore);
 	console.log('Computer score: ' + computerScore);
+	resultDisplay.textContent = `Human: ${humanScore} Computer: ${computerScore}`;
+
+	if (humanScore === 5) {
+		resultDisplay.textContent = 'Human wins the game!';
+		removeEventListeners(buttons);
+	} else if (computerScore === 5) {
+		resultDisplay.textContent = 'Computer wins the game!';
+		removeEventListeners(buttons);
+	}
+}
+
+function playGame() {
+	buttons.forEach((button) => {
+		button.addEventListener('click', handleClick);
+	});
 }
 
 playGame();
